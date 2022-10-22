@@ -1,0 +1,86 @@
+---
+title: "Presentation"
+author: "Luis Carlos Méndez"
+date: "10/21/2022"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Project Goal
+
+This peer assessed assignment has two parts. First, you will create a Shiny application and deploy it on Rstudio's servers. Second, you will use Slidify or Rstudio Presenter to prepare a reproducible pitch presentation about your application.
+
+### Procedure
+
+1. Write a shiny application with associated supporting documentation. The documentation should be thought of as whatever a user will need to get started using your application.
+
+2. Deploy the application on Rstudio’s shiny server
+
+3. Share the application link by pasting it into the provided text box
+
+4. Share your server.R and ui.R code on github
+
+## Application
+
+The application carried out consists of the measurement of some meteorological variables of Cd. Juarez, Mexico, between October 1, 2022, and October 21, 2022. The plotted data consists of temperatures, wind speed and barometric pressure.
+
+The data can be consulted at the following link. [data](https://tinyurl.com/3bfzfn3t)
+
+The runing aplication can be check here [application](https://luiskarlos.shinyapps.io/Projects/)
+
+The data used, ui.R and Server.R code are in my [GitHub](https://tinyurl.com/ubc5bp8e)
+
+## Code
+
+### 1. The Ui code is the follow:
+```
+library(openxlsx)
+ 
+weat <- read.xlsx("cjs_data.xlsx") 
+
+
+fluidPage(     
+
+  titlePanel("Weather of Ciudad Juarez, Mexico From Octuber 1,2022 to Octuber 21,2022"), 
+
+  sidebarLayout(       
+
+    sidebarPanel(p(strong("Source:",style="color:red"), a("Meteored",href="https://tinyurl.com/3e2c7scv")), 
+                 selectInput("temp", "Change Weather Variable:",  
+                             choices=colnames(weat[-1]))
+    ), 
+
+    mainPanel( 
+      plotOutput("alv")   
+    )
+    
+  ) 
+) 
+```
+******
+### 2. The server code is the follow
+```
+library(openxlsx)
+ 
+weat <- read.xlsx("cjs_data.xlsx") 
+
+
+function(input, output, session) { 
+
+    output$alv <- renderPlot({ 
+
+    serie2 <- ts(weat[, input$temp], start = 1, end = 21, frequency = 1)
+
+    plot(serie2, col = "blue",main = input$temp,xlab = "Day",ylab = input$temp,)
+
+    output$text <- renderPrint({mean(serie2)})
+   
+  })
+}
+```
+
+
+
